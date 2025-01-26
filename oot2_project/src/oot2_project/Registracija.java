@@ -46,7 +46,7 @@ public class Registracija {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 416, 203);
+		frame.setBounds(100, 100, 500, 207);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -63,17 +63,17 @@ public class Registracija {
 		frame.getContentPane().add(lblUpiiteSiLozinku);
 		
 		email = new JTextField();
-		email.setBounds(145, 27, 86, 20);
+		email.setBounds(145, 27, 177, 20);
 		frame.getContentPane().add(email);
 		email.setColumns(10);
 		
 		ime = new JTextField();
 		ime.setColumns(10);
-		ime.setBounds(145, 66, 86, 20);
+		ime.setBounds(145, 66, 177, 20);
 		frame.getContentPane().add(ime);
 		
 		lozinka = new JPasswordField();
-		lozinka.setBounds(145, 103, 86, 20);
+		lozinka.setBounds(145, 103, 177, 20);
 		frame.getContentPane().add(lozinka);
 		
 		JButton btnNewButton = new JButton("Registriraj se");
@@ -84,33 +84,71 @@ public class Registracija {
 				emails=email.getText();
 				lozinkas=lozinka.getText();
 				
-				try {
+				
+				try { // ovdje počinje provjera za ime
 					Class.forName("com.mysql.cj.jdbc.Driver");
-					Connection con=DriverManager.getConnection("jdbc:mysql://student.veleri.hr/tmatejcic", "tmatejcic", "31032003tomi");
-					String upit="INSERT INTO OOT_Korisnik(korisnicko_ime, email, lozinka) VALUES (?, ?, ?)";
-					PreparedStatement ps=con.prepareStatement(upit);
-					ps.setString(1, imes);
-					ps.setString(2, emails);
-					ps.setString(3, lozinkas);
+					Connection con1=DriverManager.getConnection("jdbc:mysql://student.veleri.hr/tmatejcic", "tmatejcic", "31032003tomi");
+
+					String upit1="SELECT * FROM OOT_Korisnik WHERE korisnicko_ime=?";
+					PreparedStatement ps1=con1.prepareStatement(upit1);
+					ps1.setString(1, imes);
 					
-					int ubacenoRedaka=ps.executeUpdate();
-					if (ubacenoRedaka>0) {
-						JOptionPane.showMessageDialog(null, "Uspješno upisani podaci.");
+					ResultSet rs=ps1.executeQuery();
+					if (rs.next())
+					{
+						JOptionPane.showMessageDialog(null, "Korisnik sa određenim imenom već postoji!");
 					}
-					else {
-						JOptionPane.showMessageDialog(null, "Podaci nisu upisani!");
-					}
+					else
+					{ // ovdje počinje provjera za email
+						Class.forName("com.mysql.cj.jdbc.Driver");
+						Connection con2=DriverManager.getConnection("jdbc:mysql://student.veleri.hr/tmatejcic", "tmatejcic", "31032003tomi");
+
+						String upit2="SELECT * FROM OOT_Korisnik WHERE email=?";
+						PreparedStatement ps2=con2.prepareStatement(upit2);
+						ps2.setString(1, emails);
+						
+						ResultSet rs1=ps2.executeQuery();
+						
+						if (rs1.next()) {
+							JOptionPane.showMessageDialog(null, "Korisnik sa određenim email-om već postoji!");
 						}
-				catch(Exception e1) {
-					JOptionPane.showMessageDialog(null, e1);
+						else {
+							
+
+						try { //tek ovdje se registrira ako prođe prijašnje provjere
+							Class.forName("com.mysql.cj.jdbc.Driver");
+							Connection con=DriverManager.getConnection("jdbc:mysql://student.veleri.hr/tmatejcic", "tmatejcic", "31032003tomi");
+							String upit="INSERT INTO OOT_Korisnik(korisnicko_ime, email, lozinka) VALUES (?, ?, ?)";
+							PreparedStatement ps=con.prepareStatement(upit);
+							ps.setString(1, imes);
+							ps.setString(2, emails);
+							ps.setString(3, lozinkas);
+							
+							int registriran_korisnik=ps.executeUpdate();
+							if (registriran_korisnik>0) {
+								JOptionPane.showMessageDialog(null, "Uspješno upisani podaci.");
+							}
+							else {
+								JOptionPane.showMessageDialog(null, "Podaci nisu upisani!");
+							}
+								}
+						catch(Exception e1) {
+							JOptionPane.showMessageDialog(null, e1);
+							
+						}
+						}
+					}
+					
+					
 					
 				}
-				
-				
+				catch(Exception e1) {
+					JOptionPane.showMessageDialog(null, e1);
+				}
 				
 			}
 		});
-		btnNewButton.setBounds(266, 102, 110, 23);
+		btnNewButton.setBounds(364, 102, 110, 23);
 		frame.getContentPane().add(btnNewButton);
 	}
 }
