@@ -14,7 +14,11 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.awt.event.ActionEvent;
+import javax.swing.JRadioButton;
+import javax.swing.ButtonGroup;
 
 public class dodajTransakciju {
 
@@ -26,6 +30,7 @@ public class dodajTransakciju {
 	 private JTextField datum;
 	 private JLabel lblNewLabel_4;
 	 private login user;
+	 private final ButtonGroup odabranaKategorija = new ButtonGroup();
 	 
 
 	/**
@@ -68,25 +73,15 @@ public class dodajTransakciju {
 		frame.getContentPane().add(lblNewLabel_2);
 		
 		
-		String [] kategorije= {"Prihod","Rashod"};
-		JScrollPane scrollPaneLista = new JScrollPane();
-		scrollPaneLista.setBounds(190, 62, 98, 126);
-		frame.getContentPane().add(scrollPaneLista);
+		JRadioButton rdbtnPrihod = new JRadioButton("Prihod");
+		odabranaKategorija.add(rdbtnPrihod);
+		rdbtnPrihod.setBounds(209, 66, 109, 23);
+		frame.getContentPane().add(rdbtnPrihod);
 		
-		/////lista///////
-		JList listKategorija = new JList(kategorije);
-		scrollPaneLista.setViewportView(listKategorija);
-		listKategorija.setVisibleRowCount(3);
-		listKategorija.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	    /////lista////////
-	    ///user///
-	   
-	   
-		
-		
-		
-		
-	    ///user///
+		JRadioButton rdbtnRashod = new JRadioButton("Rashod");
+		odabranaKategorija.add(rdbtnRashod);
+		rdbtnRashod.setBounds(209, 125, 109, 23);
+		frame.getContentPane().add(rdbtnRashod);
 	
 		lblNewLabel_3 = new JLabel("Kategorija");
 		lblNewLabel_3.setBounds(209, 36, 65, 14);
@@ -96,6 +91,8 @@ public class dodajTransakciju {
 		datum.setBounds(83, 126, 86, 20);
 		frame.getContentPane().add(datum);
 		datum.setColumns(10);
+		String danasnjiDatum = new SimpleDateFormat("dd.MM.yyyy").format(Calendar.getInstance().getTime());
+		datum.setText(danasnjiDatum);
 		
 		lblNewLabel_4 = new JLabel("Datum");
 		lblNewLabel_4.setBounds(10, 129, 46, 14);
@@ -103,37 +100,79 @@ public class dodajTransakciju {
 		
 		JButton unesiTransakciju = new JButton("Unesi Transakciju");
 		unesiTransakciju.addActionListener(new ActionListener() {
+			
 			public void actionPerformed(ActionEvent e) {
-				String transakcijaNazivs, transakcijaIznoss, datums, listKategorijas;
+				String transakcijaNazivs, transakcijaIznoss, datums, kategorijas = null;
 				transakcijaNazivs = transakcijaNaziv.getText();
 				transakcijaIznoss = transakcijaIznos.getText();
-				listKategorijas = listKategorija.getSelectedValue().toString();
-			   	int id_korisnika=user.getKorisnicki_id();
-			   
+				int id_korisnika=user.getKorisnicki_id();
 				datums = datum.getText();
-				try {
-					Class.forName("com.mysql.cj.jdbc.Driver");
-					Connection con=DriverManager.getConnection("jdbc:mysql://student.veleri.hr/tmatejcic", "tmatejcic", "31032003tomi");
-					String upitTransakcija="INSERT INTO OOT_Transakcije(naziv_transakcije, iznos_transakcije, kategorija_transakcije , id_korisnik_transakcija, datum_transakcije) VALUES (?, ?, ?, ?, ?)";
-					PreparedStatement ps=con.prepareStatement(upitTransakcija);
-					ps.setString(1, transakcijaNazivs);
-					ps.setString(2, transakcijaIznoss);
-					ps.setString(3, listKategorijas);
-					ps.setInt(4, id_korisnika);
-					ps.setString(5, datums);
-					
-					int ubacenoRedaka=ps.executeUpdate();
-					if (ubacenoRedaka>0) {
-						JOptionPane.showMessageDialog(null, "Uspješno upisani podaci.");
+				
+				if(transakcijaNazivs.length()>0 && transakcijaIznoss.length()>0 && datums.length()>0) {
+					if(rdbtnPrihod.isSelected()) {
+						kategorijas="Prihod";
+						try {
+							Class.forName("com.mysql.cj.jdbc.Driver");
+							Connection con=DriverManager.getConnection("jdbc:mysql://student.veleri.hr/tmatejcic", "tmatejcic", "31032003tomi");
+							String upitTransakcija="INSERT INTO OOT_Transakcije(naziv_transakcije, iznos_transakcije, kategorija_transakcije , id_korisnik_transakcija, datum_transakcije) VALUES (?, ?, ?, ?, ?)";
+							PreparedStatement ps=con.prepareStatement(upitTransakcija);
+							ps.setString(1, transakcijaNazivs);
+							ps.setString(2, transakcijaIznoss);
+							ps.setString(3, kategorijas);
+							ps.setInt(4, id_korisnika);
+							ps.setString(5, datums);
+							
+							int ubacenoRedaka=ps.executeUpdate();
+							if (ubacenoRedaka>0) {
+								JOptionPane.showMessageDialog(null, "Uspješno upisani podaci.");
+							}
+							else {
+								JOptionPane.showMessageDialog(null, "Podaci nisu upisani!");
+							}
+								}
+						catch(Exception e1) {
+							JOptionPane.showMessageDialog(null, e1);
+							
+						}
+					}
+					else if(rdbtnRashod.isSelected()){
+						kategorijas="Rashod";
+						try {
+							Class.forName("com.mysql.cj.jdbc.Driver");
+							Connection con=DriverManager.getConnection("jdbc:mysql://student.veleri.hr/tmatejcic", "tmatejcic", "31032003tomi");
+							String upitTransakcija="INSERT INTO OOT_Transakcije(naziv_transakcije, iznos_transakcije, kategorija_transakcije , id_korisnik_transakcija, datum_transakcije) VALUES (?, ?, ?, ?, ?)";
+							PreparedStatement ps=con.prepareStatement(upitTransakcija);
+							ps.setString(1, transakcijaNazivs);
+							ps.setString(2, transakcijaIznoss);
+							ps.setString(3, kategorijas);
+							ps.setInt(4, id_korisnika);
+							ps.setString(5, datums);
+							
+							int ubacenoRedaka=ps.executeUpdate();
+							if (ubacenoRedaka>0) {
+								JOptionPane.showMessageDialog(null, "Uspješno upisani podaci.");
+							}
+							else {
+								JOptionPane.showMessageDialog(null, "Podaci nisu upisani!");
+							}
+								}
+						catch(Exception e1) {
+							JOptionPane.showMessageDialog(null, e1);
+							
+						}
 					}
 					else {
-						JOptionPane.showMessageDialog(null, "Podaci nisu upisani!");
+						JOptionPane.showMessageDialog(null, "Morate odabrati jednu kategoriju transakcije!");
 					}
-						}
-				catch(Exception e1) {
-					JOptionPane.showMessageDialog(null, e1);
+
 					
 				}
+				else {
+					JOptionPane.showMessageDialog(null, "Unesite sve podatke!");
+				}
+				
+							   	
+				
 				
 				
 				
@@ -141,6 +180,7 @@ public class dodajTransakciju {
 		});
 		unesiTransakciju.setBounds(80, 211, 137, 23);
 		frame.getContentPane().add(unesiTransakciju);
+		
 	}
 
 	private void add(JScrollPane jScrollPane) {

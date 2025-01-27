@@ -95,7 +95,7 @@ public class glavniIzbornik {
 		postavke.setBounds(458, 374, 114, 23);
 		postavke.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				postavke window = new postavke();
+				postavke window = new postavke(user);
 				window.frame.setVisible(true);
 			}
 		});
@@ -192,12 +192,10 @@ public class glavniIzbornik {
 					if(rashodi_uk_iznos<prihodi_uk_iznos) {
 						float fuk_iznos =prihodi_uk_iznos - rashodi_uk_iznos;
 						String tekst= String.valueOf(fuk_iznos);
-						JLabel ukupni_rashodiLabel = new JLabel("Izračunan iznos: +"+tekst);
+						JLabel ukupni_rashodiLabel = new JLabel("Izračunan iznos: +"+String.valueOf(fuk_iznos));
 						ukupni_rashodiLabel.setBounds(246, 40, 150, 20);
 						ukupni_rashodiLabel.setForeground(Color.GREEN);
 						frame.getContentPane().add(ukupni_rashodiLabel);
-						frame.setVisible(true);
-						frame.revalidate();
 						frame.repaint();
 					}
 					else {
@@ -206,8 +204,6 @@ public class glavniIzbornik {
 						 ukupni_prihodiiLabel.setBounds(246, 40, 150, 20);
 						 ukupni_prihodiiLabel.setForeground(Color.RED);
 						frame.getContentPane().add( ukupni_prihodiiLabel);
-						frame.setVisible(true);
-						frame.revalidate();
 						frame.repaint();
 					}
 					

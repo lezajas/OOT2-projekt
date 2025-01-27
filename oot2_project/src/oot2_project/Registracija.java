@@ -84,68 +84,72 @@ public class Registracija {
 				emails=email.getText();
 				lozinkas=lozinka.getText();
 				
-				
-				try { // ovdje počinje provjera za ime
-					Class.forName("com.mysql.cj.jdbc.Driver");
-					Connection con1=DriverManager.getConnection("jdbc:mysql://student.veleri.hr/tmatejcic", "tmatejcic", "31032003tomi");
-
-					String upit1="SELECT * FROM OOT_Korisnik WHERE korisnicko_ime=?";
-					PreparedStatement ps1=con1.prepareStatement(upit1);
-					ps1.setString(1, imes);
-					
-					ResultSet rs=ps1.executeQuery();
-					if (rs.next())
-					{
-						JOptionPane.showMessageDialog(null, "Korisnik sa određenim imenom već postoji!");
-					}
-					else
-					{ // ovdje počinje provjera za email
+				if(imes.length()>0 && emails.length()>0&&lozinkas.length()>0)
+				{
+					try { // ovdje počinje provjera za ime
 						Class.forName("com.mysql.cj.jdbc.Driver");
-						Connection con2=DriverManager.getConnection("jdbc:mysql://student.veleri.hr/tmatejcic", "tmatejcic", "31032003tomi");
+						Connection con1=DriverManager.getConnection("jdbc:mysql://student.veleri.hr/tmatejcic", "tmatejcic", "31032003tomi");
 
-						String upit2="SELECT * FROM OOT_Korisnik WHERE email=?";
-						PreparedStatement ps2=con2.prepareStatement(upit2);
-						ps2.setString(1, emails);
+						String upit1="SELECT * FROM OOT_Korisnik WHERE korisnicko_ime=?";
+						PreparedStatement ps1=con1.prepareStatement(upit1);
+						ps1.setString(1, imes);
 						
-						ResultSet rs1=ps2.executeQuery();
-						
-						if (rs1.next()) {
-							JOptionPane.showMessageDialog(null, "Korisnik sa određenim email-om već postoji!");
+						ResultSet rs=ps1.executeQuery();
+						if (rs.next())
+						{
+							JOptionPane.showMessageDialog(null, "Korisnik sa određenim imenom već postoji!");
 						}
-						else {
-							
-
-						try { //tek ovdje se registrira ako prođe prijašnje provjere
+						else
+						{ // ovdje počinje provjera za email
 							Class.forName("com.mysql.cj.jdbc.Driver");
-							Connection con=DriverManager.getConnection("jdbc:mysql://student.veleri.hr/tmatejcic", "tmatejcic", "31032003tomi");
-							String upit="INSERT INTO OOT_Korisnik(korisnicko_ime, email, lozinka) VALUES (?, ?, ?)";
-							PreparedStatement ps=con.prepareStatement(upit);
-							ps.setString(1, imes);
-							ps.setString(2, emails);
-							ps.setString(3, lozinkas);
+							Connection con2=DriverManager.getConnection("jdbc:mysql://student.veleri.hr/tmatejcic", "tmatejcic", "31032003tomi");
+
+							String upit2="SELECT * FROM OOT_Korisnik WHERE email=?";
+							PreparedStatement ps2=con2.prepareStatement(upit2);
+							ps2.setString(1, emails);
 							
-							int registriran_korisnik=ps.executeUpdate();
-							if (registriran_korisnik>0) {
-								JOptionPane.showMessageDialog(null, "Uspješno upisani podaci.");
+							ResultSet rs1=ps2.executeQuery();
+							
+							if (rs1.next()) {
+								JOptionPane.showMessageDialog(null, "Korisnik sa određenim email-om već postoji!");
 							}
 							else {
-								JOptionPane.showMessageDialog(null, "Podaci nisu upisani!");
-							}
+								
+
+							try { //tek ovdje se registrira ako prođe prijašnje provjere
+								Class.forName("com.mysql.cj.jdbc.Driver");
+								Connection con=DriverManager.getConnection("jdbc:mysql://student.veleri.hr/tmatejcic", "tmatejcic", "31032003tomi");
+								String upit="INSERT INTO OOT_Korisnik(korisnicko_ime, email, lozinka) VALUES (?, ?, ?)";
+								PreparedStatement ps=con.prepareStatement(upit);
+								ps.setString(1, imes);
+								ps.setString(2, emails);
+								ps.setString(3, lozinkas);
+								
+								int registriran_korisnik=ps.executeUpdate();
+								if (registriran_korisnik>0) {
+									JOptionPane.showMessageDialog(null, "Uspješno upisani podaci.");
 								}
-						catch(Exception e1) {
-							JOptionPane.showMessageDialog(null, e1);
-							
+								else {
+									JOptionPane.showMessageDialog(null, "Podaci nisu upisani!");
+								}
+									}
+							catch(Exception e1) {
+								JOptionPane.showMessageDialog(null, e1);
+								
+							}
+							}
 						}
-						}
+						
+						
+						
 					}
-					
-					
-					
+					catch(Exception e1) {
+						JOptionPane.showMessageDialog(null, e1);
+					}
 				}
-				catch(Exception e1) {
-					JOptionPane.showMessageDialog(null, e1);
+				else {
+					JOptionPane.showMessageDialog(null, "Molimo vas unesite sve podatke.");
 				}
-				
 			}
 		});
 		btnNewButton.setBounds(364, 102, 110, 23);

@@ -3,6 +3,8 @@ import oot2_project.Registracija;
 import oot2_project.glavniIzbornik;
 import java.awt.EventQueue;
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -79,8 +81,7 @@ public class GUI {
 			public void actionPerformed(ActionEvent e) {
 				String imes, lozinkas;
 				imes = login_ime.getText(); 
-				lozinkas = login_lozinka.getText()
-;
+				lozinkas = login_lozinka.getText();
 				try {
 					Class.forName("com.mysql.cj.jdbc.Driver");
 					Connection con=DriverManager.getConnection("jdbc:mysql://student.veleri.hr/tmatejcic", "tmatejcic", "31032003tomi");

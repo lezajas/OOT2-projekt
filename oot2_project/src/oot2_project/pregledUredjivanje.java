@@ -7,13 +7,17 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.EventObject;
 import java.awt.event.ActionEvent;
 
 public class pregledUredjivanje {
@@ -47,12 +51,26 @@ public class pregledUredjivanje {
 		lblNewLabel.setBounds(141, 24, 93, 14);
 		frame.getContentPane().add(lblNewLabel);
 		
-		DefaultTableModel modelSve= new DefaultTableModel();
+		DefaultTableModel modelSve = new DefaultTableModel() {
+		    @Override
+		    public boolean isCellEditable(int row, int column) {
+		        if (column == 0) {
+		            return false;
+		        }
+		        return true;
+		    }
+		};
+		//gornji kod onemogućava useru editanje ID redova u tablici.
+		
+		
+		
 		modelSve.addColumn("ID");
 		modelSve.addColumn("Naziv");
 		modelSve.addColumn("Iznos");
 		modelSve.addColumn("Kategorija");
 		modelSve.addColumn("Datum");
+		
+		
 		
 		tableSve = new JTable(modelSve);
 		JScrollPane scrollPane=new JScrollPane(tableSve);
@@ -116,6 +134,7 @@ public class pregledUredjivanje {
 						int korisnik= rs.getInt(5);
 						String datum=rs.getString(6);
 						modelSve.addRow(new Object[]{id, naziv, iznos, kategorija, datum});
+						
 					}
 
 				}
