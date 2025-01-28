@@ -22,9 +22,6 @@ import java.awt.Color;
 import oot2_project.login;
 import javax.swing.JPanel;
 import java.awt.Panel;
-import org.knowm.xchart.*;
-import org.knowm.xchart.style.Styler;
-import org.knowm.xchart.style.Styler.ChartTheme;
 import javax.swing.JTextField;
 
 
