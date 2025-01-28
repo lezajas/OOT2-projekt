@@ -102,18 +102,19 @@ public class glavniIzbornik {
 		frame.getContentPane().add(postavke);
 		
 		DefaultTableModel modelPrihodi= new DefaultTableModel();
+		modelPrihodi.addColumn("Naziv");
 		modelPrihodi.addColumn("Datum");
 		modelPrihodi.addColumn("Iznos");
 		
 		tablePrihodi = new JTable(modelPrihodi);
 		JScrollPane scrollPane=new JScrollPane(tablePrihodi);
-		scrollPane.setBounds(23, 68, 158, 272);
+		scrollPane.setBounds(23, 68, 210, 272);
 		frame.getContentPane().add(scrollPane);
 		tablePrihodi.setModel(new DefaultTableModel(
 				new Object[][] {
 				},
 				new String[] {
-					"Datum", "Iznos"
+					"Naziv", "Datum", "Iznos"
 				}
 			) {
 				boolean[] columnEditables = new boolean[] {
@@ -125,18 +126,19 @@ public class glavniIzbornik {
 			});
 		
 		DefaultTableModel modelRashodi= new DefaultTableModel();
+		modelRashodi.addColumn("Naziv");
 		modelRashodi.addColumn("Datum");
 		modelRashodi.addColumn("Iznos");
 		
 		tableRashodi = new JTable(modelRashodi);
 		JScrollPane scrollPaneRashodi=new JScrollPane(tableRashodi);
-		scrollPaneRashodi.setBounds(414, 68, 158, 272);
+		scrollPaneRashodi.setBounds(362, 68, 210, 272);
 		frame.getContentPane().add(scrollPaneRashodi);
 		tableRashodi.setModel(new DefaultTableModel(
 				new Object[][] {
 				},
 				new String[] {
-					"Datum", "Iznos"
+					"Naziv", "Datum", "Iznos"
 				}
 			) {
 				boolean[] columnEditables = new boolean[] {
@@ -157,7 +159,7 @@ public class glavniIzbornik {
 				try {
 					Class.forName("com.mysql.cj.jdbc.Driver");
 					Connection con=DriverManager.getConnection("jdbc:mysql://student.veleri.hr/tmatejcic", "tmatejcic", "31032003tomi");
-					String upit="SELECT datum_transakcije, iznos_transakcije FROM OOT_Transakcije WHERE kategorija_transakcije='PRIHOD' AND id_korisnik_transakcija=?";
+					String upit="SELECT naziv_transakcije, datum_transakcije, iznos_transakcije FROM OOT_Transakcije WHERE kategorija_transakcije='PRIHOD' AND id_korisnik_transakcija=?";
 					PreparedStatement ps=con.prepareStatement(upit);
 					ps.setInt(1, id_korisnika);
 					ResultSet rs=ps.executeQuery();
@@ -165,15 +167,16 @@ public class glavniIzbornik {
 					DefaultTableModel model=(DefaultTableModel)tablePrihodi.getModel();
 					model.setRowCount(0);
 					while(rs.next()) {
-						String datums=rs.getString(1);
-						String iznos=rs.getString(2);
+						String nazivs=rs.getString(1);
+						String datums=rs.getString(2);
+						String iznos=rs.getString(3);
 						float iznosFloat = Float.parseFloat(iznos); 
 						prihodi_uk_iznos=prihodi_uk_iznos+iznosFloat;
-						model.addRow(new Object[] {datums, iznos});
+						model.addRow(new Object[] {nazivs,datums, iznos});
 					}
 					tablePrihodi.repaint();
 					
-					String upit2="SELECT datum_transakcije, iznos_transakcije FROM OOT_Transakcije WHERE kategorija_transakcije='RASHOD' AND id_korisnik_transakcija=?";
+					String upit2="SELECT naziv_transakcije, datum_transakcije, iznos_transakcije FROM OOT_Transakcije WHERE kategorija_transakcije='RASHOD' AND id_korisnik_transakcija=?";
 					PreparedStatement ps2=con.prepareStatement(upit2);
 					ps2.setInt(1, id_korisnika);
 					ResultSet rs2=ps2.executeQuery();
@@ -182,17 +185,18 @@ public class glavniIzbornik {
 					model2.setRowCount(0);
 					
 					while(rs2.next()) {
-						String datums=rs2.getString(1);
-						String iznos=rs2.getString(2);
+						String nazivs=rs2.getString(1);
+						String datums=rs2.getString(2);
+						String iznos=rs2.getString(3);
 						float iznosFloat = Float.parseFloat(iznos); 
 						rashodi_uk_iznos=rashodi_uk_iznos+iznosFloat;
-						model2.addRow(new Object[] {datums, iznos});
+						model2.addRow(new Object[] {nazivs,datums, iznos});
 					}
 					
 					if(rashodi_uk_iznos<prihodi_uk_iznos) {
 						float fuk_iznos =prihodi_uk_iznos - rashodi_uk_iznos;
 						String tekst= String.valueOf(fuk_iznos);
-						JLabel ukupni_rashodiLabel = new JLabel("Izračunan iznos: +"+String.valueOf(fuk_iznos));
+						JLabel ukupni_rashodiLabel = new JLabel("Izračunan iznos: +"+tekst);
 						ukupni_rashodiLabel.setBounds(246, 40, 150, 20);
 						ukupni_rashodiLabel.setForeground(Color.GREEN);
 						frame.getContentPane().add(ukupni_rashodiLabel);
@@ -200,7 +204,8 @@ public class glavniIzbornik {
 					}
 					else {
 						float fuk_iznos =rashodi_uk_iznos - prihodi_uk_iznos;
-						JLabel ukupni_prihodiiLabel = new JLabel("Izračunan iznos: -"+String.valueOf(fuk_iznos));
+						String tekst= String.valueOf(fuk_iznos);
+						JLabel ukupni_prihodiiLabel = new JLabel("Izračunan iznos: -"+tekst);
 						 ukupni_prihodiiLabel.setBounds(246, 40, 150, 20);
 						 ukupni_prihodiiLabel.setForeground(Color.RED);
 						frame.getContentPane().add( ukupni_prihodiiLabel);

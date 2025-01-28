@@ -84,16 +84,14 @@ public class Registracija {
 				emails=email.getText();
 				lozinkas=lozinka.getText();
 				
-				if(imes.length()>0 && emails.length()>0&&lozinkas.length()>0)
+				if(imes.length()>0 && emails.length()>0 && lozinkas.length()>0)
 				{
 					try { // ovdje počinje provjera za ime
 						Class.forName("com.mysql.cj.jdbc.Driver");
 						Connection con1=DriverManager.getConnection("jdbc:mysql://student.veleri.hr/tmatejcic", "tmatejcic", "31032003tomi");
-
 						String upit1="SELECT * FROM OOT_Korisnik WHERE korisnicko_ime=?";
 						PreparedStatement ps1=con1.prepareStatement(upit1);
-						ps1.setString(1, imes);
-						
+						ps1.setString(1, imes);		
 						ResultSet rs=ps1.executeQuery();
 						if (rs.next())
 						{

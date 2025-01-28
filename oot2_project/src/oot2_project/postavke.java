@@ -75,25 +75,45 @@ public class postavke {
 				String korisnicko_imes;
 				korisnicko_imes=korisnicko_ime.getText();
 				if(korisnicko_imes.length()==0){
-					JOptionPane.showMessageDialog(null, "Upišite novu korisničko ime!");
+					JOptionPane.showMessageDialog(null, "Upišite novo korisničko ime!");
 				}
 				else {
 					try {
 						Class.forName("com.mysql.cj.jdbc.Driver");
-						Connection con=DriverManager.getConnection("jdbc:mysql://student.veleri.hr/tmatejcic", "tmatejcic", "31032003tomi");
-						String upit = "UPDATE OOT_Korisnik SET korisnicko_ime=?  WHERE id_korisnik=?";
-	                    Statement stmt=con.createStatement();
-	                    PreparedStatement ps=con.prepareStatement(upit);
-	                    ps.setString(1, korisnicko_imes);
-	                    ps.setInt(2, korisnicki_id);
-	                    int rowsUpdated = ps.executeUpdate();
-						if (rowsUpdated>0)
+						Connection con1=DriverManager.getConnection("jdbc:mysql://student.veleri.hr/tmatejcic", "tmatejcic", "31032003tomi");
+						String upit1="SELECT * FROM OOT_Korisnik WHERE korisnicko_ime=?";
+						PreparedStatement ps1=con1.prepareStatement(upit1);
+						ps1.setString(1, korisnicko_imes);		
+						ResultSet rs=ps1.executeQuery();
+						if (rs.next())
 						{
-	                    JOptionPane.showMessageDialog(null, "Korisničko ime uspiješno promjenjeno!");
+							JOptionPane.showMessageDialog(null, "Korisnik sa određenim imenom već postoji!");
 						}
 						else {
-							JOptionPane.showMessageDialog(null, "Dogodila se greška");
+							
+							try {
+								Class.forName("com.mysql.cj.jdbc.Driver");
+								Connection con=DriverManager.getConnection("jdbc:mysql://student.veleri.hr/tmatejcic", "tmatejcic", "31032003tomi");
+								String upit = "UPDATE OOT_Korisnik SET korisnicko_ime=?  WHERE id_korisnik=?";
+			                    Statement stmt=con.createStatement();
+			                    PreparedStatement ps=con.prepareStatement(upit);
+			                    ps.setString(1, korisnicko_imes);
+			                    ps.setInt(2, korisnicki_id);
+			                    int rowsUpdated = ps.executeUpdate();
+								if (rowsUpdated>0)
+								{
+			                    JOptionPane.showMessageDialog(null, "Korisničko ime uspiješno promjenjeno!");
+								}
+								else {
+									JOptionPane.showMessageDialog(null, "Dogodila se greška");
+								}
+							}
+							catch(Exception e1) {
+								JOptionPane.showMessageDialog(null, e1);
+							}
+							
 						}
+						
 					}
 					catch(Exception e1) {
 						JOptionPane.showMessageDialog(null, e1);

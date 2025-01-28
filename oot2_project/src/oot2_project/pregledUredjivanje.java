@@ -22,7 +22,7 @@ import java.awt.event.ActionEvent;
 
 public class pregledUredjivanje {
 
-	JFrame frame;
+	public JFrame frame;
 	private JTable tableSve;
 	private JButton obrisiTransakciju;
 	private JButton prikaziPodatke;
@@ -164,30 +164,36 @@ public class pregledUredjivanje {
 					Class.forName("com.mysql.cj.jdbc.Driver");
 					Connection con=DriverManager.getConnection("jdbc:mysql://student.veleri.hr/tmatejcic", "tmatejcic", "31032003tomi");
 
-					String upit1="SELECT * FROM OOT_Transakcije WHERE id_transakcije=?";
+					String upit1="SELECT id_transakcije FROM OOT_Transakcije WHERE id_transakcije=?";
 					PreparedStatement ps1=con.prepareStatement(upit1);
 					ps1.setString(1, ids);
+					
 					
 					ResultSet rs1=ps1.executeQuery();
 					if(rs1.next()) {
 						
+						if(listKategorijas.equals("Prihod") || listKategorijas.equals("Rashod")) {
+							 String upit = "UPDATE OOT_Transakcije SET naziv_transakcije = ?, iznos_transakcije = ?, kategorija_transakcije = ?, datum_transakcije = ? WHERE id_transakcije=?";
+		                      Statement stmt=con.createStatement();
+						PreparedStatement ps=con.prepareStatement(upit);
+							ps.setString(1, transakcijaNazivs);
+							ps.setString(2, transakcijaIznoss);
+							ps.setString(3, listKategorijas);
+							ps.setString(4, datums);
+							ps.setString(5, ids);
+							
+							int rowsUpdated = ps.executeUpdate();
+						    if (rowsUpdated > 0) {
+						    	JOptionPane.showMessageDialog(null, "Podaci su uspiješno ažurirani.");
+						    } else {
+						        JOptionPane.showMessageDialog(null, "Ažuriranje nije uspijelo.");
+						    }
+						}
 						
+						else {
+							JOptionPane.showMessageDialog(null, "Kategorija mora biti ili Prihod ili Rashod!");
+						}
 						
-						 String upit = "UPDATE OOT_Transakcije SET naziv_transakcije = ?, iznos_transakcije = ?, kategorija_transakcije = ?, datum_transakcije = ? WHERE id_transakcije=?";
-	                      Statement stmt=con.createStatement();
-					PreparedStatement ps=con.prepareStatement(upit);
-						ps.setString(1, transakcijaNazivs);
-						ps.setString(2, transakcijaIznoss);
-						ps.setString(3, listKategorijas);
-						ps.setString(4, datums);
-						ps.setString(5, ids);
-						
-						int rowsUpdated = ps.executeUpdate();
-					    if (rowsUpdated > 0) {
-					    	JOptionPane.showMessageDialog(null, "Podaci su uspiješno ažurirani.");
-					    } else {
-					        JOptionPane.showMessageDialog(null, "Ažuriranje nije uspijelo.");
-					    }
 					}
 					
 				}
